@@ -19,18 +19,39 @@
     text-align: center;
     padding: 10px 0;
   }
+  .flex-pr-issue {
+    display: flex;
+    flex-direction: column;
+  }
   </style>
 </head>
 <body>
     <div = >
-        <!-- loop over blog posts and render them -->
+        <h3>Recent Contributions</h3>
         <div class="flex-container">
-          <% user.forEach((repos) => { %>
+          
+          <% user.push.forEach((repos) => { %>
             <div class="repos">
               <%= repos.name %>
             </div>
           <% }) %>
         </div>
-      </div>
+        <div class="flex-pr-issue">
+          <h3>Issues Raised</h3>
+          <% user.issues.forEach((issue) => { %>
+            <div class="issues">
+              <%= issue.name %>
+            </div>
+          <% }) %>
+        </div>
+        <div class="flex-pr-issue">
+          <h3>Pull Requests Made</h3>
+          <% user.pullRequests.forEach((pr) => { %>
+            <div class="pr">
+              <%= pr.name %>
+            </div>
+          <% }) %>
+        </div>
+    </div>
 </body>
 </html>
