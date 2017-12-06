@@ -40,7 +40,7 @@
           <h3>Issues Raised</h3>
           <% user.issues.forEach((issue) => { %>
             <div class="issues">
-              <%= issue.name %>
+                <a href=<%= issue.url %>><%= issue.name %></a>
             </div>
           <% }) %>
         </div>
@@ -48,7 +48,7 @@
           <h3>Pull Requests Made</h3>
           <% user.pullRequests.forEach((pr) => { %>
             <div class="pr">
-              <%= pr.name %>
+              <a href=<%= pr.url %>><%= pr.name %></a>
             </div>
           <% }) %>
         </div>
