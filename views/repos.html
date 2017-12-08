@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Team</title>
+  <style>
+    .flex-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+    }
+
+    .repos {
+      border: 1px solid black;
+      height: 80px;
+      width: 20%;
+      margin: 10px 0;
+      text-align: center;
+      padding: 10px 0;
+    }
+
+    .flex-issue-pr {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+    }
+  </style>
+</head>
+
+<body>
+  <input type="text" id="userId" />
+  <input type="button" value="Add to list" id="addUser" />
+  <div id="list"></div>
+
+ <script>
+ 
+let httpRequest
+const makeRequest = () => {
+  httpRequest = new XMLHttpRequest()
+  if (!httpRequest) {
+    console.log('Giving up :( Cannot create an XMLHTTP instance')
+    return false
+  }
+  httpRequest.onreadystatechange = alertContents
+  let userId = document.getElementById('userId').value
+  httpRequest.open('GET', '/user?userId=' + userId, true)
+  httpRequest.send()
+}
+
+const alertContents = () => {
+  if (httpRequest.readyState === XMLHttpRequest.DONE) {
+    if (httpRequest.status === 200) {
+      let data = JSON.parse(httpRequest.responseText)
+      console.log(data)
+      createUserView(data)
+    } else {
+      console.log('There was a problem with request')
+    }
+  }
+}
+const elem = e => document.createElement(e)
+const text = t => document.createTextNode(t)
+const h3 = t => elem('h3')
+const div = () => elem('div')
+const a = () => elem('a')
+const createUserView = (userData) => {
+  let data = userData.data
+  let parentDiv = document.getElementById('list')
+  let childDivFirst = div(), h3First = h3()
+  h3First.appendChild(text(`Recent Contributions of ${data.name}`))
+  let childDivSecond = div()
+  childDivSecond.setAttribute('class', 'flex-container')
+  for (let i = 0; i < data.push.length; i++) {
+    let miniDiv = div()
+    miniDiv.setAttribute('class', 'repos')
+    miniDiv.appendChild(text(data.push[i].name))
+    childDivSecond.appendChild(miniDiv)
+  }
+  let childDivThree = elem('div')
+  childDivThree.setAttribute('class', 'flex-issue-pr')
+  let issues = div()
+  issues.setAttribute('class', 'issues')
+  let h3Second = h3()
+  h3Second.appendChild(text('Issues'))
+  issues.appendChild(h3Second)
+  for (let i = 0; i < data.issues.length; i++) {
+    let url = data.issues[i].url,
+      name = data.issues[i].name
+    let aLink = a()
+    aLink.setAttribute('href', url)
+    aLink.appendChild(text(name))
+    let li = elem('li')
+    li.appendChild(aLink)
+    issues.appendChild(li)
+    childDivThree.appendChild(issues)
+  }
+  let pr = div()
+  pr.setAttribute('class', 'pr')
+  let h3Third = h3()
+  h3Third.appendChild(text('Pull Requests'))
+  pr.appendChild(h3Third)
+  for (let i = 0; i < data.pullRequests.length; i++) {
+    let url = data.pullRequests[i].url,
+      name = data.pullRequests[i].name
+    let aLink = a()
+    aLink.setAttribute('href', url)
+    aLink.appendChild(text(name))
+    let li = elem('li')
+    li.appendChild(aLink)
+    pr.appendChild(li)
+    childDivThree.appendChild(pr)
+  }
+  childDivFirst.appendChild(h3First)
+  childDivFirst.appendChild(childDivSecond)
+  childDivFirst.appendChild(childDivThree)
+  parentDiv.appendChild(childDivFirst)
+}
+document.getElementById('addUser').addEventListener('click', makeRequest)
+ </script>
+</body>
+
+</html>
